@@ -13,10 +13,10 @@
 	if(..())
 		return
 	var/mob/living/silicon/robot/R = usr
-	if(R.module.type != /obj/item/robot_module)
+	if(R.module.module_type)
 		R.hud_used.toggle_show_robot_modules()
 		return 1
-	R.pick_module()
+	R.module.choose_module()
 
 /obj/screen/robot/module1
 	name = "module1"

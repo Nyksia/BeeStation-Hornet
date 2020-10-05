@@ -36,7 +36,7 @@
 	var/obj/screen/robot_modules_background
 
 //3 Modules can be activated at any one time.
-	var/obj/item/robot_module/module = null
+	var/datum/robot_module/module = null
 	var/obj/item/module_active = null
 	held_items = list(null, null, null) //we use held_items for the module holding, because that makes sense to do!
 
@@ -131,7 +131,7 @@
 		builtInCamera.internal_light = FALSE
 		if(wires.is_cut(WIRE_CAMERA))
 			builtInCamera.status = 0
-	module = new /obj/item/robot_module(src)
+	module = new /datum/robot_module(src)
 	module.rebuild_modules()
 	update_icons()
 	. = ..()
@@ -196,32 +196,6 @@
 	eye_lights = null
 	cell = null
 	return ..()
-
-/mob/living/silicon/robot/proc/pick_module()
-	if(module.type != /obj/item/robot_module)
-		return
-
-	if(wires.is_cut(WIRE_RESET_MODULE))
-		to_chat(src,"<span class='userdanger'>ERROR: Module installer reply timeout. Please check internal connections.</span>")
-		return
-
-	var/list/modulelist = list("Standard" = /obj/item/robot_module/standard, \
-	"Engineering" = /obj/item/robot_module/engineering, \
-	"Medical" = /obj/item/robot_module/medical, \
-	"Miner" = /obj/item/robot_module/miner, \
-	"Janitor" = /obj/item/robot_module/janitor, \
-	"Service" = /obj/item/robot_module/butler)
-	if(!CONFIG_GET(flag/disable_peaceborg))
-		modulelist["Peacekeeper"] = /obj/item/robot_module/peacekeeper
-	if(!CONFIG_GET(flag/disable_secborg))
-		modulelist["Security"] = /obj/item/robot_module/security
-
-	var/input_module = input("Please, select a module!", "Robot", null, null) as null|anything in sortList(modulelist)
-	if(!input_module || module.type != /obj/item/robot_module)
-		return
-
-	module.transform_to(modulelist[input_module])
-
 
 /mob/living/silicon/robot/proc/updatename(client/C)
 	if(shell)
@@ -617,14 +591,14 @@
 
 /mob/living/silicon/robot/update_icons()
 	cut_overlays()
-	icon_state = module.cyborg_base_icon
+	icon_state = module.base_icon
 	if(stat != DEAD && !(IsUnconscious() || IsStun() || IsParalyzed() || low_power_mode)) //Not dead, not stunned.
 		if(!eye_lights)
 			eye_lights = new()
 		if(lamp_intensity > 2)
-			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.cyborg_base_icon]"]_l"
+			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.base_icon]"]_l"
 		else
-			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.cyborg_base_icon]"]_e[ratvar ? "_r" : ""]"
+			eye_lights.icon_state = "[module.special_light_key ? "[module.special_light_key]":"[module.base_icon]"]_e[ratvar ? "_r" : ""]"
 		eye_lights.icon = icon
 		add_overlay(eye_lights)
 
@@ -804,34 +778,34 @@
 	module.transform_to(set_module)
 
 /mob/living/silicon/robot/modules/standard
-	set_module = /obj/item/robot_module/standard
+	set_module = /datum/robot_module/standard
 
 /mob/living/silicon/robot/modules/medical
-	set_module = /obj/item/robot_module/medical
+	set_module = /datum/robot_module/medical
 	icon_state = "medical"
 
 /mob/living/silicon/robot/modules/engineering
-	set_module = /obj/item/robot_module/engineering
+	set_module = /datum/robot_module/engineering
 	icon_state = "engineer"
 
 /mob/living/silicon/robot/modules/security
-	set_module = /obj/item/robot_module/security
+	set_module = /datum/robot_module/security
 	icon_state = "sec"
 
 /mob/living/silicon/robot/modules/clown
-	set_module = /obj/item/robot_module/clown
+	set_module = /datum/robot_module/clown
 	icon_state = "clown"
 
 /mob/living/silicon/robot/modules/peacekeeper
-	set_module = /obj/item/robot_module/peacekeeper
+	set_module = /datum/robot_module/peacekeeper
 	icon_state = "peace"
 
 /mob/living/silicon/robot/modules/miner
-	set_module = /obj/item/robot_module/miner
+	set_module = /datum/robot_module/miner
 	icon_state = "miner"
 
 /mob/living/silicon/robot/modules/janitor
-	set_module = /obj/item/robot_module/janitor
+	set_module = /datum/robot_module/janitor
 	icon_state = "janitor"
 
 /mob/living/silicon/robot/modules/syndicate
@@ -846,7 +820,7 @@
 							<b>You are armed with powerful offensive tools to aid you in your mission: help the operatives secure the nuclear authentication disk. \
 							Your cyborg LMG will slowly produce ammunition from your power supply, and your operative pinpointer will find and locate fellow nuclear operatives. \
 							<i>Help the operatives secure the disk at all costs!</i></b>"
-	set_module = /obj/item/robot_module/syndicate
+	set_module = /datum/robot_module/syndicate
 
 /mob/living/silicon/robot/modules/syndicate/Initialize()
 	. = ..()
@@ -870,7 +844,7 @@
 						Your defibrillator paddles can revive operatives through their hardsuits, or can be used on harm intent to shock enemies! \
 						Your energy saw functions as a circular saw, but can be activated to deal more damage, and your operative pinpointer will find and locate fellow nuclear operatives. \
 						<i>Help the operatives secure the disk at all costs!</i></b>"
-	set_module = /obj/item/robot_module/syndicate_medical
+	set_module = /datum/robot_module/syndicate/medical
 
 /mob/living/silicon/robot/modules/syndicate/saboteur
 	icon_state = "synd_engi"
@@ -881,7 +855,7 @@
 						Your cyborg chameleon projector allows you to assume the appearance and registered name of a Nanotrasen engineering borg, and undertake covert actions on the station \
 						Be aware that almost any physical contact or incidental damage will break your camouflage \
 						<i>Help the operatives secure the disk at all costs!</i></b>"
-	set_module = /obj/item/robot_module/saboteur
+	set_module = /datum/robot_module/syndicate/saboteur
 
 /mob/living/silicon/robot/proc/notify_ai(notifytype, oldname, newname)
 	if(!connected_ai)
@@ -1022,7 +996,7 @@
 		resize = 0.5
 		hasExpanded = FALSE
 		update_transform()
-	module.transform_to(/obj/item/robot_module)
+	module.transform_to(/datum/robot_module)
 
 	// Remove upgrades.
 	for(var/obj/item/borg/upgrade/I in upgrades)
@@ -1038,7 +1012,7 @@
 	return 1
 
 /mob/living/silicon/robot/proc/has_module()
-	if(!module || module.type == /obj/item/robot_module)
+	if(!module || module.type == /datum/robot_module)
 		. = FALSE
 	else
 		. = TRUE
@@ -1046,7 +1020,7 @@
 /mob/living/silicon/robot/proc/update_module_innate()
 	designation = module.name
 	if(hands)
-		hands.icon_state = module.moduleselect_icon
+		hands.icon_state = module.module_select_icon
 	if(module.can_be_pushed)
 		status_flags |= CANPUSH
 	else

@@ -213,7 +213,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	if(istype(loc, /obj/item/storage))
 		item_flags |= IN_STORAGE
 
-	if(istype(loc, /obj/item/robot_module))
+	if(istype(loc, /datum/robot_module))
 		item_flags |= IN_INVENTORY
 
 	if(!hitsound)
@@ -438,7 +438,7 @@ GLOBAL_VAR_INIT(rpg_loot_items, FALSE)
 	attack_paw(A)
 
 /obj/item/attack_ai(mob/user)
-	if(istype(src.loc, /obj/item/robot_module))
+	if(istype(src.loc, /datum/robot_module))
 		//If the item is part of a cyborg module, equip it
 		if(!iscyborg(user))
 			return

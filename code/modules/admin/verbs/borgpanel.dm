@@ -66,8 +66,8 @@
 		.["channels"] += list(list("name" = k, "installed" = (k in borg.radio.channels)))
 	.["cell"] = borg.cell ? list("missing" = FALSE, "maxcharge" = borg.cell.maxcharge, "charge" = borg.cell.charge) : list("missing" = TRUE, "maxcharge" = 1, "charge" = 0)
 	.["modules"] = list()
-	for(var/moduletype in typesof(/obj/item/robot_module))
-		var/obj/item/robot_module/module = moduletype
+	for(var/moduletype in typesof(/datum/robot_module))
+		var/datum/robot_module/module = moduletype
 		.["modules"] += list(list(
 			"name" = initial(module.name),
 			"type" = "[module]"
